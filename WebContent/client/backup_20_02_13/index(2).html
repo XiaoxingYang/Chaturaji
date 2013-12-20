@@ -1,0 +1,109 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>HTML5 Canvas - 4-Player Chess</title>
+		<script src='scripts/connection.js'></script>
+		<script src='scripts/4pchess_new.js'></script>
+		<script src='scripts/processInterface.js'></script>
+		<script>
+			function init(){
+				connectToServer("ws://batch1.doc.ic.ac.uk:8080/Chaturaji/WSHandler");
+
+				draw();
+				//setInterval(manageLog, 500);
+				
+				showGameList();
+			}
+			
+			
+			function scrollDownLog(){
+				var statusLog = document.getElementById("statusLog");
+				statusLog.scrollTop = statusLog.scrollHeight - statusLog.clientHeight;
+				var moveLog = document.getElementById("moveLog");
+				moveLog.scrollTop = moveLog.scrollHeight - moveLog.clientHeight;
+			}
+			
+					</script>
+	</head>
+	<body onload='init();'>
+		<header>  
+            <h1>4-Player Chess</h1>
+        </header>  
+        <nav>  
+            <ul id="options">
+				<li><button name="host"><strong>Host Game</strong></button></li>
+				<li><button name="join" disabled>Join Game</button></li>
+				<li><button name="host" disabled>Start Game</strong></button></li>
+				<li><button name="refresh" onclick="showGameList()">Refresh</button></li>
+				<li><input type="text" name="filter" value="Search Game" /></li>
+			</ul>
+			<div id="servers">
+				
+				<table>
+				<tr>
+					<th width="15%">Server Name</th>
+					<th width="15%">Game Mode</th>
+					<th width="15%">Host Player</th>
+					<th width="15%">Client Player Number</th>
+				</tr>
+				<tr id="games"></tr>
+				
+				<script>
+				function showGameList()
+				{
+					var x="",i=1, gameNum=1;
+					var game= new Array(gameNum);
+					for (var i = 0; i < gameNum; i++) {
+						game[i] = new Array(4);
+					}
+					//get games info from server
+					//...
+					game[0][0]="Game1";game[0][1]="Human without AI";
+					game[0][2]="SONG JI";game[0][3]="4(full)";
+					for (i=0; i<gameNum; i++)
+					{
+						//x = x + "<th>";
+						//for(var j=0;j<4;j++)
+							//x=x + game[i][j];
+						//x =x + "</th>";
+					}
+					x=x+"<th>"+game[0][0]+"</th>";
+					x=x+"<th>"+game[0][1]+"</th>";
+					x=x+"<th>"+game[0][2]+"</th>";
+					x=x+"<th>"+game[0][3]+"</th>";
+					//x=x + "<h" + i + ">Heading " + i + "</h" + i + ">";
+					document.getElementById("games").innerHTML=x;
+				}
+				
+				
+				
+				</script>
+				</table>
+				
+				<p class="status">
+					No games found. <a class="host" href="#host">Start one?</a>
+				</p>
+				<br>
+			</div>
+
+        </nav>  
+        <div id="main">  
+			<div id="board" style="float:left">
+				<canvas id="chess" width="400" height="400"></canvas>
+			</div>
+			<div id="rightLog">
+				<textarea id="moveLog" rows=24 cols=20></textarea>
+			</div>
+		</div>
+		</br>
+		<div id="bottomLog">
+			<textarea id="statusLog" rows=10 cols=47></textarea>
+        </div>  
+        <footer>  
+            <p>Copyright © 2013 All Rights</p>
+        </footer>  
+	
+		
+	</body>
+	
+</html>

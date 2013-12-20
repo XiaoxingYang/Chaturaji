@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<project name="Chaturaji" default="build" basedir=".">
+	<target name="init">
+		<mkdir dir="build/classes"/>
+		<mkdir dir="build/AI"/>
+		<mkdir dir="build/core" />
+		<mkdir dir="build/tests"/>
+		<mkdir dir="junit_reports"/>
+		<mkdir dir="target" />
+		<javac destdir="build/core" debug="true" srcdir="core">
+			<classpath refid="lib.classpath"/>
+			<classpath path="build/core"/>
+		</javac>
+	    <jar destfile="WebContent/WEB-INF/lib/shared.jar"
+	         basedir="build/core"
+	         includes="**/*.class">
+	    </jar>
+	</target>
+	<path id="lib.classpath">
+		<fileset dir="WebContent/WEB-INF/lib">
+			<include name="*.jar"/>
+			<exclude name="**/test/**"/>
+		</fileset>
+		<fileset dir="lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	<path id="build.classpath">
+		<fileset dir="WebContent/WEB-INF/lib">
+			<include name="*.jar"/>
+			<exclude name="**/test/**"/>
+		</fileset>
+		<fileset dir="lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	<path id="test.classpath">
+		<fileset dir="WebContent/WEB-INF/lib/">
+		<include name="**/*.jar"/>
+		</fileset>
+	</path>
+	<path id="AI.classpath">
+		<fileset dir="WebContent/WEB-INF/lib">
+			<include name="*.jar"/>
+			<exclude name="**/test/**"/>
+		</fileset>
+		<fileset dir="lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	<target name="build" depends="init, build.AI" >
+		<javac destdir="build/classes" debug="true" srcdir="src">
+			<classpath refid="build.classpath"/>
+			<classpath refid="AI.classpath"/>
+			<classpath>
+				<pathelement location="build/AI"/>
+				<pathelement location="build/core"/>
+			</classpath>
+		</javac>
+	</target>
+	<target name="build.AI" depends="init" >
+		<javac destdir="build/AI" debug="true" srcdir="AI">
+			<classpath refid="AI.classpath"/>
+			<classpath path="build/classes"></classpath>
+		</javac>
+	</target>
+	<target name="build.tests" depends="init, build, build.AI" >
+		<javac destdir="build/tests" debug="true" srcdir="test">
+			<classpath refid="test.classpath"/>
+			<classpath>
+				<pathelement location="build/classes"/>
+				<pathelement location="build/AI"/>
+				<pathelement location="build/core"/>
+			</classpath>
+		</javac>
+		<copy file="WebContent/WEB-INF/classes/hibernate.cfg.xml" todir="build/tests"/>
+	</target>
+	<target name="jtests" depends="build.tests" description="Runs all unit tests"> 
+            <junit printsummary="yes" fork="yes" showoutput="yes">
+                    <classpath refid="test.classpath" />
+            		<classpath>
+            			<pathelement location="build/tests"/>
+            			<pathelement location="build/classes"/>
+            			<pathelement location="build/AI"/>
+            			<pathelement location="build/core"/>
+            		</classpath>
+                    <formatter type="plain"/>
+                    
+                    <batchtest fork="yes" todir="junit_reports">
+                        <fileset dir="build/tests" />
+                    </batchtest>
+            </junit>
+    </target>
+	<target name="war" depends="build">
+	    <war destfile="target/Chaturaji.war" webxml="WebContent/WEB-INF/web.xml">
+	        <fileset dir="WebContent"/>
+	        <lib dir="WebContent/WEB-INF/lib"/>
+	        <classes dir="build/classes"/>
+	    </war>
+	</target>
+	  <target name="AI" depends="build.AI">
+	    <jar destfile="WebContent/WEB-INF/lib/chaturajiAI.jar"
+	         basedir="build/AI"
+	         includes="**/*.class">
+	    </jar>
+	    <jar destfile="target/charturajiAI.jar"
+	         basedir="build/AI"
+	         includes="**/*.class">
+	      <manifest>
+	        <attribute name="Main-Class" value="chaturaji.communication.WebSocketCommunication" />
+	      </manifest>
+	    </jar>
+	  </target>
+	<target name="clean">
+	    <delete dir="target" />
+	    <delete dir="build" />
+		<delete dir="junit_reports" />
+	</target>
+</project>

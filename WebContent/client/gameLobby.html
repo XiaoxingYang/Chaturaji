@@ -1,0 +1,141 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>4-Player Chess lobby</title>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+		</script>
+	</head>
+	<body onload='init();'>
+			<script>
+				var gameList= [];
+				var selectedGame;
+				var DEBUG=false;
+				var address='batch1.doc.ic.ac.uk:8080/Chaturaji/';
+				
+				function init(){
+					var game= [];
+					game.push("Game0");game.push("2");
+					game.push("SONG JI");game.push("1");
+					gameList.push(game);
+					document.getElementById("hostGameParameters").style.visibility="hidden";
+					showGameList();
+				}
+				
+				function refresh(){
+					document.getElementById("gameName").value="";
+					document.getElementById("AINumber").value="";
+					document.getElementById("join").disabled=true;
+					showGameList();
+				}
+				
+				function showGameList()
+				{
+					//get games info from server
+					if(!DEBUG)
+					{
+						$.get('http://' + address + 'GameList', function(data){
+								var listData=data.toString().split(" ");
+								var listSize=parseInt(listData[0]);
+								var index=1;
+								gameList= [];
+								for(i=0;i<listSize;i++){
+									var game= [];
+									game.push(listData[index]);game.push(listData[index+1]);
+									game.push(listData[index+2]);game.push(listData[index+3]);
+									gameList.push(game);
+									index=index+4;
+								}
+								var x="";
+								x+="<tr>";
+								x+="<th>Game id</th>";
+								x+="<th>AI number</th>";
+								x+="<th>Host Player</th>";
+								x+="<th>Client Player Number</th>";
+								x+="</tr>";
+								for (i=0; i<gameList.length; i++)
+								{
+									x = x + "<tr id=\""+gameList[i][0]+" \" onclick=\"selectGame(this)\">";
+									//x = x + "onMouseOver=\"this.bgColor = '#C0C0C0'\" onMouseOut =\"this.bgColor = '#FFFFFF'\">";
+									for(var j=0;j<4;j++)
+										x=x +"<td>"+gameList[i][j]+"</td>";
+									x =x + "</tr>";
+								}
+								document.getElementById("games").innerHTML=x;
+							}
+						);
+						alert(data);
+					}
+				}
+				
+				function selectGame(element){
+					refresh();
+					document.getElementById(element.id).bgColor="#00FF00";
+					selectedGame=element.id;
+					document.getElementById("join").disabled=false;
+				}
+				
+				function joinGame(){
+					//join
+					//join(selectedGame,playerid);
+					if(!DEBUG){
+						window.location.href = "http://" + address + "Dispatcher?id=" + selectedGame;
+					}
+				}
+				
+				function hostGame(){
+					document.getElementById("hostGameParameters").style.visibility="visible";
+				}
+				
+				function creatGame(){
+					var name=document.getElementById("gameName").value;
+					var AINumber=document.getElementById("AINumber").value;
+					if(name == "" || AINumber=="")
+						alert("empty input");
+					else{
+						window.location.href = "http://" + address + "Dispatcher?create=" + name + "&nb_ais=" + AINumber;
+					}
+				}
+				
+				function cancelCreate(){
+					document.getElementById("gameName").value="";
+					document.getElementById("AINumber").value="";
+					document.getElementById("hostGameParameters").style.visibility="hidden";
+				}
+			</script>
+		<div id="container" style="width:900px">
+
+		<div id="header" style="background-color:#FFA500;">
+		<h1 style="margin-bottom:0;">4-Player Chess</h1></div>
+
+		<div id="menu" style="background-color:#FFD700;height:500px;width:150px;float:left;">
+		<b>Menu</b><br>
+		<button id="host" onclick="hostGame()" style="width:120px;"><strong>Host Game</strong></button><br>
+		<button id="join" disabled onclick="joinGame()" style="width:120px;">Join Game</button><br>
+		<button id="refresh" onclick="refresh()" style="width:120px;">Refresh</button><br>
+		<input type="text" id="filter" value="Search Game" style="width:120px;"/><br>
+		<br>
+		<div  id="hostGameParameters" style="hidden" style="width:120px;">
+			<input id="gameName" style="width:120px;">Player Name</input><br>
+			<input id="AINumber" style="width:120px;">Number of AI</input><br>
+			<button id="comfirm" onclick="creatGame()">Comfirm</button><br>
+			<button id="cancel" onclick="cancelCreate()">Cancel</button><br>
+		</div><br>
+		</div>
+
+		<div id="content" style="background-color:#EEEEEE;height:500px;width:750px;float:left;">
+		
+		<div id="servers">
+				<table id="games" style="width:700px">
+				</table>
+				<br>
+		</div>
+		
+		</div>
+		
+		<div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">
+		4-player chess</div>
+
+		</div>
+		
+	</body>
+</html>

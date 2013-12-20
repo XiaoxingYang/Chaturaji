@@ -1,0 +1,350 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Test</title>
+		
+		<link rel="stylesheet" type="text/css" href="test/qunit-1.11.0.css" />
+		<script src='test/qunit-git.js'></script>
+		
+		<script src='scripts/connection.js'></script>
+		<script src='scripts/4pchess_new.js'></script>
+		<script src='scripts/processInterface.js'></script>
+		<script>
+
+			function init(){
+				connectToServer("ws://localhost:8080/Chaturaji/WSHandler");
+
+				draw();
+				//setInterval(manageLog, 500);
+				
+			}
+			
+			
+			function scrollDownLog(){
+				var statusLog = document.getElementById("statusLog");
+				statusLog.scrollTop = statusLog.scrollHeight - statusLog.clientHeight;
+				var moveLog = document.getElementById("moveLog");
+				moveLog.scrollTop = moveLog.scrollHeight - moveLog.clientHeight;
+			}
+			
+					</script>
+	</head>
+	<body onload='init();'>
+=======
+				
+		function a(bla){
+			return -bla;
+		}
+				
+		window.onload = function(){
+		//start the tests
+		
+			draw();
+			test("4pchess/getNextTurn", function(){
+				//test random permutations
+				activePlayers = [1,1,0,1];
+				equal(getNextTurn(1, activePlayers),3);
+				equal(getNextTurn(0, activePlayers),1);
+				equal(getNextTurn(3, activePlayers),0);
+				activePlayers = [0,1,0,1];
+				equal(getNextTurn(3, activePlayers),1);
+				activePlayers = [1,1,0,0];
+				equal(getNextTurn(1, activePlayers),0);
+				activePlayers = [1,0,0,1];
+				equal(getNextTurn(0, activePlayers),3);
+				activePlayers = [0,0,1,1];
+				equal(getNextTurn(3, activePlayers),2);
+				
+				//** stress test **//
+				//invalid indices, index out of bounds
+				equal(getNextTurn(5, activePlayers),-1);
+				equal(getNextTurn(-5, activePlayers),-1);
+				//not int type
+				equal(getNextTurn(1.0, activePlayers), 2);
+				equal(getNextTurn(1.3, activePlayers), 2); // floor?
+				equal(getNextTurn("a", activePlayers), -1);
+				
+				
+				}
+			);
+			
+			test("4pchess/getColorFromPlayerId", function(){
+				//test all ids and colors
+				
+				equal(getColorFromPlayerId(0), "red");
+				equal(getColorFromPlayerId(1), "green");
+				equal(getColorFromPlayerId(2), "yellow");
+				equal(getColorFromPlayerId(3), "black");	
+				//** stress test **//
+				//invalid indices, index out of bounds
+				equal(getColorFromPlayerId(4), -1);	
+				equal(getColorFromPlayerId(-3), -1);				
+				}
+			);
+			
+			test("4pchess/getPlayerFromPiece", function(){
+				//test all ids and colors
+					for(var i = 0; i <20; i++){
+						var expectation;
+						if(i < 5) expectation = 0;
+						if(i >= 5 && i < 10) expectation = 1;
+						if(i >= 10 && i < 15) expectation = 2;
+						if(i >= 15 && i < 20) expectation = 3;
+						equal(getPlayerFromPiece(i), expectation);
+					}
+					
+					//** stress test **//
+					//invalid indices, index out of bounds	
+					equal(getPlayerFromPiece(-1), -1);
+					equal(getPlayerFromPiece(-6), -1);
+					equal(getPlayerFromPiece(20), -1);
+				}
+			);
+			
+			test("4pchess/getSquareColor", function(){
+				//test some random squares
+				equal(getSquareColor(0,0), SQUARE_COLOR_1);
+				equal(getSquareColor(7,7), SQUARE_COLOR_1);
+				equal(getSquareColor(1,1), SQUARE_COLOR_1);
+				equal(getSquareColor(0,2), SQUARE_COLOR_1);
+				equal(getSquareColor(0,2), SQUARE_COLOR_1);
+				equal(getSquareColor(5,6), SQUARE_COLOR_2);
+				equal(getSquareColor(4,7), SQUARE_COLOR_2);
+				equal(getSquareColor(0,3), SQUARE_COLOR_2);
+				equal(getSquareColor(3,4), SQUARE_COLOR_2);
+				
+				//** stress test **//
+				//invalid indices, index out of bounds
+				equal(getSquareColor(-1,2), -1);
+				equal(getSquareColor(8,2), -1);
+				
+				}
+			);
+			
+			test("4pchess/getHighlightMoveColor", function(){
+				//test some random squares
+				equal(getHighlightMoveColor(0,0), MOVE_COLOR_1);
+				equal(getHighlightMoveColor(7,7), MOVE_COLOR_1);
+				equal(getHighlightMoveColor(1,1), MOVE_COLOR_1);
+				equal(getHighlightMoveColor(0,2), MOVE_COLOR_1);
+				equal(getHighlightMoveColor(0,2), MOVE_COLOR_1);
+				equal(getHighlightMoveColor(5,6), MOVE_COLOR_2);
+				equal(getHighlightMoveColor(4,7), MOVE_COLOR_2);
+				equal(getHighlightMoveColor(0,3), MOVE_COLOR_2);
+				equal(getHighlightMoveColor(3,4), MOVE_COLOR_2);
+				
+				//** stress test **//
+				//invalid indices, index out of bounds
+				equal(getHighlightMoveColor(-1,2), -1);
+				equal(getHighlightMoveColor(8,2), -1);
+				
+				}
+			);
+			
+			
+			test("4pchess/getBoardIndex", function(){
+				//test some random rows and columns
+				equal(getBoardIndex(0,0), 0);
+				equal(getBoardIndex(0,1), 1);
+				equal(getBoardIndex(1,0), 8);
+				equal(getBoardIndex(7,7), 63);
+				equal(getBoardIndex(4,7), 39);
+				
+				//** stress test **//
+				//invalid indices, index out of bounds
+				equal(getBoardIndex(8,10), -1); //out of board
+				equal(getBoardIndex(-1,-1), -1);
+				}
+			);	
+			
+			
+			test("4pchess/boardClick", function(){
+				//simulate a click on the board
+				var canvas = document.getElementById('chess');
+				canvas.offsetLeft = 20;
+				canvas.offsetTop = 20;
+				var evt = document.createEvent("MouseEvents");
+				evt.initMouseEvent("click", true, true, window,
+									0, 0, 0, 
+									0, 0,  //clientX, clientY
+									false, false, false, false, 0, null);
+			
+				//test some random rows and columns
+				equal(boardClick(evt), "click processed");
+
+				}
+			);	
+			
+			
+			test("4pchess/possibleMoves", function(){
+				//test some random moves from known starting pieces and their positions
+				deepEqual(possibleMoves(0, 2), [18]); //yellow boat
+				deepEqual(possibleMoves(39, 0), [30,31]); //red king
+				deepEqual(possibleMoves(15, 3), [23]); //black right pawn
+				deepEqual(possibleMoves(57, 1), [42,40]); //green knight
+				
+				//** stress test **//
+				//invalid indices, index out of bounds
+				deepEqual(possibleMoves(66, 1), []);
+				deepEqual(possibleMoves(-1, 1), []);
+				deepEqual(possibleMoves(62, -1), -1);
+				deepEqual(possibleMoves(0, 4), -1);
+				}
+			);	
+			
+		
+			test("4pchess/screenToSquare", function(){
+				//test some random moves from known starting pieces and their positions
+				equal(screenToSquare(49,49),0); //border cases
+				equal(screenToSquare(50,50),9);
+				equal(screenToSquare(50,0),1);
+				equal(screenToSquare(0,50),8);
+				equal(screenToSquare(200,250),44);
+				//** stress test **//
+				//invalid indices, index out of bounds
+				equal(screenToSquare(-3,-3),-1);
+				equal(screenToSquare(-53,-53),-1);
+				equal(screenToSquare(450, 7),-1);
+				}
+			);	
+			
+			test("4pchess/drawSquareInColor", function(){
+				//test some random moves from known starting pieces and their positions
+				equal(drawSquareInColor(0, 0, SQUARE_COLOR_1), "drawSquareInColor succeeded"); 
+				equal(drawSquareInColor(1, 1, SQUARE_COLOR_1), "drawSquareInColor succeeded");
+				equal(drawSquareInColor(1, 0, SQUARE_COLOR_2), "drawSquareInColor succeeded");
+				//** stress test **//
+				//invalid indices, index out of bounds
+				equal(drawSquareInColor(-1, 0, SQUARE_COLOR_1), -1);
+				equal(drawSquareInColor(-1, 0, SQUARE_COLOR_2), -1);
+				equal(drawSquareInColor(8, 0, SQUARE_COLOR_2), -1);
+				equal(drawSquareInColor(0, 8, SQUARE_COLOR_1), -1);
+				}
+			);	
+			
+			/** connection.js **/
+			
+			test("connection/connectToServer", function(){
+					equal(connectToServer("ws://batch1.doc.ic.ac.uk:8080/Chaturaji/WSHandler"), 1);
+				}
+			);
+			
+			test("connection/handleIncoming", function(){
+			
+				//generate valid incoming move message
+				var moveMsg = {
+								"type": 2,
+								"data": {
+									"from_sq": "A1", 
+									"to_sq": "A2"
+										}
+							};
+							
+							
+				var scoreMsg = {
+								"type": 4,
+								"data": {
+									"p1": "0", 
+									"p2": "0", 
+									"p3": "0", 
+									"p4": "0"
+										}
+							};		
+
+				var pinMsg = {
+								"type": 5,
+								"data": {
+									"player": 1
+										}
+							};	
+				var endMsg = {
+								"type": 6,
+								"data": {
+									"outcome" : "win",
+									"player": 1 
+										}
+							};
+
+				var suddenMsg = {
+								"type": 7,
+								"data": {
+									"moveLimit" : 15
+										}
+							};		
+
+				var promoMsg = {
+								"type": 8,
+								"data": {
+									"sq" : 15,
+									"pieceType": "queen"
+										}
+							};	
+
+				var startMsg = {
+								"type": 10,
+								"data": {
+									"p1": "0", 
+									"p2": "0", 
+									"p3": "0", 
+									"p4": "0"
+										}
+							};		
+
+				var boatMsg = {
+								"type": 11,
+								"data": {
+									"tboat": "B2", 
+									"boats": ["B3", "H1"]
+										}
+							};		
+
+				var playerIDMsg = {
+								"type": 50,
+								"data": {
+									"Id": "1"
+										}
+							};							
+				
+				//test msgs
+				equal(handleIncoming(JSON.stringify(moveMsg)),2);
+				equal(handleIncoming(JSON.stringify(scoreMsg)), 4); 
+				equal(handleIncoming(JSON.stringify(pinMsg)), 5); 			
+				equal(handleIncoming(JSON.stringify(endMsg)), 6);
+				equal(handleIncoming(JSON.stringify(suddenMsg)), 7); 		
+				equal(handleIncoming(JSON.stringify(promoMsg)), 8); 	
+				equal(handleIncoming(JSON.stringify(startMsg)), 10);	
+				equal(handleIncoming(JSON.stringify(boatMsg)), 11);	
+				equal(handleIncoming(JSON.stringify(playerIDMsg)), 50);					
+				
+				}
+			);	
+			
+			
+		
+		}
+
+		
+	
+		
+		</script>
+	</head>
+	<body>
+		<div id="qunit"></div>
+	
+	
+>>>>>>> ab75904209f40753571b596c16aedd8476e482ca
+		<div>
+			<div id="board" style="float:left">
+				<canvas id="chess" width="400" height="400"></canvas>
+			</div>
+			<div id="rightLog">
+				<textarea id="moveLog" rows=24 cols=20></textarea>
+			</div>
+		</div>
+		</br>
+		<div id="bottomLog">
+			<textarea id="statusLog" rows=10 cols=47></textarea>
+		</div>
+	</body>
+	
+</html>

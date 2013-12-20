@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript">
+var ws;
+function WebSocketTest()
+{
+  if ("WebSocket" in window)
+  {
+//     alert("WebSocket is supported by your Browser!");
+     // Let us open a web socket
+     ws = new WebSocket("ws://shell1.doc.ic.ac.uk:8080/Chaturaji/WSHandler");
+     ws.onopen = function()
+     {
+        // Web Socket is connected, send data using send()
+        alert("Oki d'acc");
+     };
+     ws.onmessage = function (evt) 
+     { 
+        var received_msg = evt.data;
+        alert("Message is received..." + received_msg);
+     };
+     ws.onclose = function()
+     { 
+        // websocket is closed.
+        alert("Connection is closed..."); 
+     };
+  }
+  else
+  {
+     // The browser doesn't support WebSocket
+     alert("WebSocket NOT supported by your Browser!");
+  }
+}
+function send() {
+	var JSONObject = {"Color":"0", "Move":"It works !!"};
+	ws.send(JSON.stringify(JSONObject));
+	alert(JSON.stringify(JSONObject));
+}
+</script>
+<title>Test comm</title>
+</head>
+<body>
+<div id="sse">
+   <a href="javascript:WebSocketTest()">Run WebSocket</a>
+   <a href="javascript:send()">Send</a>
+</div>
+</body>
+</html>

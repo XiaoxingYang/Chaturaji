@@ -1,0 +1,54 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>4-Player Chess Login</title>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+		</script>
+	</head>
+	<body>
+		<script>
+			var address='localhost:8080/Chaturaji/'
+			var DEBUG=false;
+				
+			function login(){
+				var playerName=document.getElementById("playername").value;
+				var playPassword=document.getElementById("password").value;
+				//alert("player name: " + playerName + "\npassword: " + playPassword);
+				$.post(address+'UserHandler',
+				{
+					type: "login",
+					login: playerName,
+					password: playPassword
+				},
+				function(data,status){
+					//alert("Data: " + data + "\nStatus: " + status);
+				});
+				//var url = "gameLobby.html";
+				//window.location = url;
+			}
+			
+			function register(){
+				var playerName=document.getElementById("playername").value();
+				var playPassword=document.getElementById("password").value();
+				$.post(address+'UserHandler',
+				{
+					type: "Signup",
+					login: playerName,
+					password: playPassword
+				},
+				function(data,status){
+					//alert("Data: " + data + "\nStatus: " + status);
+				});
+				//var url = "gameLobby.html";
+				//window.location = url;
+			}
+		</script>
+		<p>Player Name:</p>
+		<input type="text" id="playername" value="" style="width:120px;"/><br>
+		<p>Password:</p>
+		<input type="text" id="password" value="" style="width:120px;"/><br>
+		<button id="login" onclick="login()" style="width:120px;">Login</button><br>
+		<button id="register" onclick="register()" style="width:120px;">Register</button><br>
+		
+	</body>
+</html>

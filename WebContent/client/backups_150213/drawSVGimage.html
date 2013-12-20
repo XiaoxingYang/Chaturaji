@@ -1,0 +1,30 @@
+<html>
+    <head>
+        
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript">
+            function init(){
+                var c = document.getElementById("board");
+                var ctx = c.getContext('2d');
+                                                                                
+                var img = new Image();
+                img.src = "img/greenBoat.svg";
+                img.onload = function(){
+                    ctx.drawImage(this, 10, 10, 100, 100);
+                    ctx.drawImage(this, 100, 10, 200, 200);
+                    ctx.drawImage(this, 200, 10, 300, 300);
+                    ctx.drawImage(this, 400, 10, 400, 400);
+                }
+				
+			}
+        </script>
+    </head>
+    <body onload="init()">
+        
+            <canvas style="margin:auto;" id="board" width="800" height="600">
+              
+            </canvas>
+					
+			
+    </body>
+</html>

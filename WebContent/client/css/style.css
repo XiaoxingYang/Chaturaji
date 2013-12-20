@@ -1,0 +1,132 @@
+#board {
+    height: 400px;
+    width: 400px;
+}
+
+#board .column {
+    height: 50px;
+    width: 50px;
+    background: #CEECF5;
+    float: left;
+    font-size: 45px;
+}
+
+#board .column.dark {
+    background: #01A9DB;
+}
+
+#board .column div {
+    height: 50px;
+    width: 50px;
+}
+
+
+#board .column .BLACK_KING {
+    background: url('../img/blackKing.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .BLACK_ELEPHANT {
+    background: url('../img/blackElephant.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .BLACK_KNIGHT {
+    background: url('../img/blackKnight.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .BLACK_BOAT {
+    background: url('../img/blackBoat.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .BLACK_PAWN {
+    background: url('../img/blackPawn.svg');
+    background-repeat: no-repeat;
+}
+
+
+
+#board .column .RED_KING {
+    background: url('../img/redKing.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .RED_ELEPHANT {
+    background: url('../img/redElephant.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .RED_KNIGHT {
+    background: url('../img/redKnight.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .RED_BOAT {
+    background: url('../img/redBoat.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .RED_PAWN {
+    background: url('../img/redPawn.svg');
+    background-repeat: no-repeat;
+}
+
+
+#board .column .GREEN_KING {
+    background: url('../img/greenKing.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .GREEN_ELEPHANT {
+    background: url('../img/greenElephant.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .GREEN_KNIGHT {
+    background: url('../img/greenKnight.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .GREEN_BOAT {
+    background: url('../img/greenBoat.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .GREEN_PAWN {
+    background: url('../img/greenPawn.svg');
+    background-repeat: no-repeat;
+}
+
+
+#board .column .YELLOW_KING {
+    background: url('../img/yellowKing.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .YELLOW_ELEPHANT {
+    background: url('../img/yellowElephant.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .YELLOW_KNIGHT {
+    background: url('../img/yellowKnight.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .YELLOW_BOAT {
+    background: url('../img/yellowBoat.svg');
+    background-repeat: no-repeat;
+}
+
+#board .column .YELLOW_PAWN {
+    background: url('../img/yellowPawn.svg');
+    background-repeat: no-repeat;
+}
+
+
+
+#board .column .EMPTY {
+    background: none;
+}
